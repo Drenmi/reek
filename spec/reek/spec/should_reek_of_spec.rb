@@ -41,8 +41,8 @@ RSpec.describe Reek::Spec::ShouldReekOf do
 
     context 'checking code in a File' do
       let(:clean_file) { Pathname.glob("#{SAMPLES_PATH}/three_clean_files/*.rb").first }
-      let(:matcher) { Reek::Spec::ShouldReekOf.new(:UncommunicativeVariableName, name: '@s') }
-      let(:smelly_file) { Pathname.glob("#{SAMPLES_PATH}/two_smelly_files/*.rb").first }
+      let(:matcher) { Reek::Spec::ShouldReekOf.new(:UncommunicativeMethodName, name: 'x') }
+      let(:smelly_file) { SAMPLES_PATH.join('smelly.rb') }
 
       it 'matches a smelly file' do
         expect(matcher.matches?(smelly_file)).to be_truthy

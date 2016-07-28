@@ -23,7 +23,7 @@ RSpec.describe Reek::Spec::ShouldReek do
 
   describe 'checking code in a File' do
     let(:clean_file) { SAMPLES_PATH.join('three_clean_files/clean_one.rb') }
-    let(:smelly_file) { SAMPLES_PATH.join('two_smelly_files/dirty_one.rb') }
+    let(:smelly_file) { SAMPLES_PATH.join('smelly.rb') }
     let(:masked_file) { SAMPLES_PATH.join('clean_due_to_masking/dirty_one.rb') }
 
     context 'matcher without masking' do
@@ -39,7 +39,7 @@ RSpec.describe Reek::Spec::ShouldReek do
 
       it 'reports the smells when should_not fails' do
         matcher.matches?(smelly_file)
-        expect(matcher.failure_message_when_negated).to match('UncommunicativeVariableName')
+        expect(matcher.failure_message_when_negated).to match('UncommunicativeMethodName')
       end
     end
 
