@@ -24,7 +24,6 @@ RSpec.describe Reek::Spec::ShouldReek do
   describe 'checking code in a File' do
     let(:clean_file) { SAMPLES_PATH.join('three_clean_files/clean_one.rb') }
     let(:smelly_file) { SAMPLES_PATH.join('smelly.rb') }
-    let(:masked_file) { SAMPLES_PATH.join('clean_due_to_masking/dirty_one.rb') }
 
     context 'matcher without masking' do
       let(:matcher) { Reek::Spec::ShouldReek.new }
@@ -44,10 +43,10 @@ RSpec.describe Reek::Spec::ShouldReek do
     end
 
     context 'matcher without masking' do
-      let(:path) { SAMPLES_PATH.join('clean_due_to_masking/masked.reek') }
+      let(:path) { SAMPLES_PATH.join('configuration/configuration.reek') }
       let(:configuration) { test_configuration_for(path) }
       let(:matcher) { Reek::Spec::ShouldReek.new(configuration: configuration) }
-      let(:masked_file) { SAMPLES_PATH.join('clean_due_to_masking/dirty_one.rb') }
+      let(:masked_file) { SAMPLES_PATH.join('smelly.rb') }
 
       it 'masks smells using the relevant configuration' do
         expect(matcher.matches?(masked_file)).to be_falsey
