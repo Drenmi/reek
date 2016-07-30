@@ -13,7 +13,7 @@ module Reek
       end
 
       def matches?(source)
-        self.examiner = Examiner.new(source, configuration: configuration)
+        self.examiner = Examiner.new(source, configuration: configuration).run
         examiner.smelly?
       end
 

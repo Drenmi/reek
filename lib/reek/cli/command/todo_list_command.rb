@@ -31,7 +31,7 @@ module Reek
           sources.map do |source|
             Examiner.new(source,
                          filter_by_smells: smell_names,
-                         configuration: configuration)
+                         configuration: configuration).run
           end.map(&:smells).flatten
         end
 

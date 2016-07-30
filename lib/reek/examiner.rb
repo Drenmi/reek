@@ -34,7 +34,17 @@ module Reek
       @smell_types      = Smells::SmellRepository.eligible_smell_types(filter_by_smells)
       @smell_repository = Smells::SmellRepository.new(smell_types: @smell_types,
                                                       configuration: configuration.directive_for(description))
-      run
+    end
+
+    def run
+      syntax_tree = source.syntax_tree
+      return self unless syntax_tree
+      ContextBuilder.new(syntax_tree).context_tree.each do |element|
+        smell_repository.examine(element)
+      end
+
+      smell_repository.report_on(collector)
+      self
     end
 
     # FIXME: Should be named "origin"
@@ -73,15 +83,5 @@ module Reek
     private
 
     attr_reader :collector, :source, :smell_repository
-
-    def run
-      syntax_tree = source.syntax_tree
-      return unless syntax_tree
-      ContextBuilder.new(syntax_tree).context_tree.each do |element|
-        smell_repository.examine(element)
-      end
-
-      smell_repository.report_on(collector)
-    end
   end
 end

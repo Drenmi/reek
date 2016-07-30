@@ -23,7 +23,7 @@ module Reek
           sources.each do |source|
             reporter.add_examiner Examiner.new(source,
                                                filter_by_smells: smell_names,
-                                               configuration: configuration)
+                                               configuration: configuration).run
           end
         end
 

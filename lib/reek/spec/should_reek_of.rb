@@ -22,7 +22,7 @@ module Reek
 
       def matches?(source)
         @matching_smell_types = nil
-        self.examiner = Examiner.new(source, configuration: configuration)
+        self.examiner = Examiner.new(source, configuration: configuration).run
         set_failure_messages
         matching_smell_details?
       end

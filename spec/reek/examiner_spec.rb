@@ -28,7 +28,7 @@ RSpec.describe Reek::Examiner do
   let(:expected_first_smell) { 'NestedIterators' }
 
   context 'with a fragrant String' do
-    let(:examiner) { described_class.new('def good() true; end') }
+    let(:examiner) { described_class.new('def good() true; end').run }
 
     it_should_behave_like 'no smells found'
   end
@@ -45,7 +45,7 @@ RSpec.describe Reek::Examiner do
     let(:examiner) do
       described_class.new(smelly_file,
                           filter_by_smells: [],
-                          configuration: configuration)
+                          configuration: configuration).run
     end
     let(:path) { SAMPLES_PATH.join('all_but_one_masked/masked.reek') }
     let(:smelly_file) { Pathname.glob(SAMPLES_PATH.join('all_but_one_masked/d*.rb')).first }
@@ -55,7 +55,7 @@ RSpec.describe Reek::Examiner do
 
   context 'with a fragrant File' do
     let(:clean_file) { Pathname.glob(SAMPLES_PATH.join('three_clean_files/*.rb')).first }
-    let(:examiner) { described_class.new(clean_file) }
+    let(:examiner) { described_class.new(clean_file).run }
 
     it_should_behave_like 'no smells found'
   end
@@ -63,7 +63,7 @@ RSpec.describe Reek::Examiner do
   describe '#smells' do
     it 'returns the detected smell warnings' do
       code     = 'def foo; bar.call_me(); bar.call_me(); end'
-      examiner = described_class.new code, filter_by_smells: ['DuplicateMethodCall']
+      examiner = described_class.new(code, filter_by_smells: ['DuplicateMethodCall']).run
 
       smell = examiner.smells.first
       expect(smell).to be_a(Reek::Smells::SmellWarning)
