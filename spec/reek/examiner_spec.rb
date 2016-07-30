@@ -60,6 +60,30 @@ RSpec.describe Reek::Examiner do
     it_should_behave_like 'no smells found'
   end
 
+  describe '#new' do
+    context 'with an incomprehensible source that causes Reek to crash' do
+      let(:subject) do
+        stacktrace = <<-EOS
+          lib/reek/smells/nested_iterators.rb:124:in `block in ignored_iterator?': undefined method `name' for #<#<Class:0x007ffb5131e328>:0x007ffb5131e2b0> (NoMethodError)
+            from /Users/eric/.rbenv/versions/2.3.1/lib/ruby/gems/2.3.0/gems/reek-4.0.3/lib/reek/smells/nested_iterators.rb:124:in `any?'
+            from /Users/eric/.rbenv/versions/2.3.1/lib/ruby/gems/2.3.0/gems/reek-4.0.3/lib/reek/smells/nested_iterators.rb:124:in `ignored_iterator?'
+        EOS
+        smell_repository = Smells::SmellRepository.new
+        smell_repository.stub(:examine) { raise RuntimeError }
+        examiner = described_class.new 'dummy source'
+        examiner.stub(:smell_repository) { smell_repository }
+      end
+
+      it 'does not report anything on the collector', skip: true do
+
+      end
+
+      it 'prints out a helpful error message on STDERR', skip: true do
+
+      end
+    end
+  end
+
   describe '#smells' do
     it 'returns the detected smell warnings' do
       code     = 'def foo; bar.call_me(); bar.call_me(); end'
