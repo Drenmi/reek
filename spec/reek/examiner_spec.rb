@@ -28,13 +28,13 @@ RSpec.describe Reek::Examiner do
   let(:expected_first_smell) { 'NestedIterators' }
 
   context 'with a fragrant String' do
-    let(:examiner) { described_class.new('def good() true; end').run }
+    let(:examiner) { described_class.run('def good() true; end').run }
 
     it_should_behave_like 'no smells found'
   end
 
   context 'with a smelly String' do
-    let(:examiner) { described_class.new('def fine() y = 4; end') }
+    let(:examiner) { described_class.run('def fine() y = 4; end') }
     let(:expected_first_smell) { 'UncommunicativeVariableName' }
 
     it_should_behave_like 'one smell found'
@@ -43,9 +43,9 @@ RSpec.describe Reek::Examiner do
   context 'with a partially masked smelly File' do
     let(:configuration) { test_configuration_for(path) }
     let(:examiner) do
-      described_class.new(smelly_file,
+      described_class.run(smelly_file,
                           filter_by_smells: [],
-                          configuration: configuration).run
+                          configuration: configuration)
     end
     let(:path) { SAMPLES_PATH.join('all_but_one_masked/masked.reek') }
     let(:smelly_file) { Pathname.glob(SAMPLES_PATH.join('all_but_one_masked/d*.rb')).first }
@@ -55,15 +55,38 @@ RSpec.describe Reek::Examiner do
 
   context 'with a fragrant File' do
     let(:clean_file) { Pathname.glob(SAMPLES_PATH.join('three_clean_files/*.rb')).first }
-    let(:examiner) { described_class.new(clean_file).run }
+    let(:examiner) { described_class.run(clean_file) }
 
     it_should_behave_like 'no smells found'
+  end
+
+  describe '.run' do
+    let(:examiner) do
+      described_class.run('class C; def f; end; end')
+    end
+
+    context 'returns an Examiner' do
+      it 'has been run on the given source' do
+        expect(examiner.description).to eq('string')
+      end
+
+      it 'has the right smells' do
+        smells = examiner.smells
+        expect(smells[0].message).to eq('has no descriptive comment')
+        expect(smells[1].message).to eq("has the name 'f'")
+        expect(smells[2].message).to eq("has the name 'C'")
+      end
+
+      it 'has the right smell count' do
+        expect(examiner.smells_count).to eq(3)
+      end
+    end
   end
 
   describe '#smells' do
     it 'returns the detected smell warnings' do
       code     = 'def foo; bar.call_me(); bar.call_me(); end'
-      examiner = described_class.new(code, filter_by_smells: ['DuplicateMethodCall']).run
+      examiner = described_class.run(code, filter_by_smells: ['DuplicateMethodCall'])
 
       smell = examiner.smells.first
       expect(smell).to be_a(Reek::Smells::SmellWarning)

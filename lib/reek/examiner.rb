@@ -10,7 +10,7 @@ module Reek
   #
   # @public
   #
-  # :reek:TooManyInstanceVariables: { max_instance_variables: 6 }
+  # :reek:TooManyInstanceVariables: { max_instance_variables: 7 }
   class Examiner
     #
     # Creates an Examiner which scans the given +source+ for code smells.
@@ -25,7 +25,6 @@ module Reek
     # @param configuration [Configuration::AppConfiguration]
     #   The configuration for this Examiner.
     #
-    # @public
     def initialize(source,
                    filter_by_smells: [],
                    configuration: Configuration::AppConfiguration.default)
@@ -36,15 +35,35 @@ module Reek
                                                       configuration: configuration.directive_for(description))
     end
 
-    def run
-      syntax_tree = source.syntax_tree
-      return self unless syntax_tree
-      ContextBuilder.new(syntax_tree).context_tree.each do |element|
-        smell_repository.examine(element)
-      end
+    #
+    # Creates an Examiner, runs it on the given +source+ to scan for code smells
+    # right away and returns the corresponding Examiner instance.
+    #
+    # This method takes the same parameters as +initialize+.
+    # An example call could look like this:
+    #
+    #   Examiner.run('class Klass; def f; end; end', ["UncommunicativeMethodName"])
+    #   Examiner.run('class Bad; end', ["DuplicateMethodCall"])
+    #
+    # @return an instance of Examiner
+    #
+    # @public
+    def self.run(*args)
+      new(*args).run
+    end
 
-      smell_repository.report_on(collector)
-      self
+    # :reek:TooManyStatements: { max_statements: 6 }
+    def run
+      @run ||= begin
+        syntax_tree = source.syntax_tree
+        return self unless syntax_tree
+        ContextBuilder.new(syntax_tree).context_tree.each do |element|
+          smell_repository.examine(element)
+        end
+
+        smell_repository.report_on(collector)
+        self
+      end
     end
 
     # FIXME: Should be named "origin"
