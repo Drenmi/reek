@@ -47,8 +47,9 @@ RSpec.describe Reek::Examiner do
                           filter_by_smells: [],
                           configuration: configuration)
     end
-    let(:path) { SAMPLES_PATH.join('all_but_one_masked/masked.reek') }
-    let(:smelly_file) { Pathname.glob(SAMPLES_PATH.join('all_but_one_masked/d*.rb')).first }
+    let(:path) { SAMPLES_PATH.join('configuration/partial_mask.reek') }
+    let(:smelly_file) { SAMPLES_PATH.join('smelly.rb') }
+    let(:expected_first_smell) { 'UncommunicativeVariableName' }
 
     it_should_behave_like 'one smell found'
   end
