@@ -43,7 +43,7 @@ RSpec.describe Reek::Spec::ShouldReek do
     end
 
     context 'matcher without masking' do
-      let(:path) { SAMPLES_PATH.join('configuration/configuration.reek') }
+      let(:path) { SAMPLES_PATH.join('configuration/full_mask.reek') }
       let(:configuration) { test_configuration_for(path) }
       let(:matcher) { Reek::Spec::ShouldReek.new(configuration: configuration) }
       let(:masked_file) { SAMPLES_PATH.join('smelly.rb') }
