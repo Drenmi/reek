@@ -22,7 +22,7 @@ RSpec.describe Reek::Spec::ShouldReek do
   end
 
   describe 'checking code in a File' do
-    let(:clean_file) { SAMPLES_PATH.join('three_clean_files/clean_one.rb') }
+    let(:clean_file) { SAMPLES_PATH.join('clean.rb') }
     let(:smelly_file) { SAMPLES_PATH.join('smelly.rb') }
 
     context 'matcher without masking' do

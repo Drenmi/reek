@@ -40,7 +40,7 @@ RSpec.describe Reek::Spec::ShouldReekOf do
     end
 
     context 'checking code in a File' do
-      let(:clean_file) { Pathname.glob("#{SAMPLES_PATH}/three_clean_files/*.rb").first }
+      let(:clean_file) { SAMPLES_PATH.join('clean.rb') }
       let(:matcher) { Reek::Spec::ShouldReekOf.new(:UncommunicativeMethodName, name: 'x') }
       let(:smelly_file) { SAMPLES_PATH.join('smelly.rb') }
 

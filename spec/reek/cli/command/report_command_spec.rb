@@ -10,7 +10,7 @@ RSpec.describe Reek::CLI::Command::ReportCommand do
     let(:configuration) { double 'configuration' }
     let(:sources) { [source_file] }
 
-    let(:clean_file) { Pathname.glob("#{SAMPLES_PATH}/three_clean_files/*.rb").first }
+    let(:clean_file) { SAMPLES_PATH.join('clean.rb') }
     let(:smelly_file) { SAMPLES_PATH.join('smelly.rb') }
 
     let(:command) do
