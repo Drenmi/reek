@@ -83,7 +83,7 @@ RSpec.describe Reek::Configuration::ConfigurationFileFinder do
 
     describe '.load_from_file' do
       let(:sample_configuration_path) do
-        SAMPLES_PATH.join('configuration/simple_configuration.reek')
+        SAMPLES_PATH.join('configuration/full_mask.reek')
       end
       let(:sample_configuration_loaded) do
         {
