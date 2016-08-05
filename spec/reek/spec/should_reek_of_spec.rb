@@ -40,16 +40,14 @@ RSpec.describe Reek::Spec::ShouldReekOf do
     end
 
     context 'checking code in a File' do
-      let(:clean_file) { SAMPLES_PATH.join('clean.rb') }
       let(:matcher) { Reek::Spec::ShouldReekOf.new(:UncommunicativeMethodName, name: 'x') }
-      let(:smelly_file) { SAMPLES_PATH.join('smelly.rb') }
 
       it 'matches a smelly file' do
-        expect(matcher.matches?(smelly_file)).to be_truthy
+        expect(matcher.matches?(SMELLY_FILE)).to be_truthy
       end
 
       it 'doesnt match a fragrant file' do
-        expect(matcher.matches?(clean_file)).to be_falsey
+        expect(matcher.matches?(CLEAN_FILE)).to be_falsey
       end
     end
   end
@@ -65,8 +63,8 @@ RSpec.describe Reek::Spec::ShouldReekOf do
     end
 
     context 'both are matching' do
-      let(:smelly_code) { 'def x() y = 4; end' }
       let(:matcher) { Reek::Spec::ShouldReekOf.new(:UncommunicativeVariableName, name: 'y') }
+      let(:smelly_code) { 'def x() y = 4; end' }
 
       it 'is truthy' do
         expect(matcher.matches?(smelly_code)).to be_truthy
