@@ -30,8 +30,8 @@ RSpec.describe Reek::Configuration::ConfigurationFileFinder do
     end
 
     it 'returns the file even if it’s just ‘.reek’' do
-      found = described_class.find(current: SAMPLES_PATH.join('masked_by_dotfile'))
-      expect(found).to eq(SAMPLES_PATH.join('masked_by_dotfile/.reek'))
+      found = described_class.find(current: CONFIG_PATH)
+      expect(found).to eq(CONFIG_PATH.join('.reek'))
     end
 
     it 'returns the file in home if traversing from the current dir fails' do
@@ -44,10 +44,9 @@ RSpec.describe Reek::Configuration::ConfigurationFileFinder do
     end
 
     it 'prefers the file in :current over one in :home' do
-      found = described_class.find(current: SAMPLES_PATH, home: SAMPLES_PATH.join('masked_by_dotfile'))
-      file_in_home = SAMPLES_PATH.join('masked_by_dotfile/.reek')
+      found = described_class.find(current: SAMPLES_PATH, home: CONFIG_PATH)
       file_in_current = SAMPLES_PATH.join('exceptions.reek')
-      expect(found).not_to eq(file_in_home)
+
       expect(found).to eq(file_in_current)
     end
 
