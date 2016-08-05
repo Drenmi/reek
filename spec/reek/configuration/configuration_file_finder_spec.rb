@@ -25,8 +25,10 @@ RSpec.describe Reek::Configuration::ConfigurationFileFinder do
     end
 
     it 'returns the file in a parent dir if none in current dir' do
-      found = described_class.find(current: SAMPLES_PATH.join('no_config_file'))
-      expect(found).to eq(SAMPLES_PATH.join('exceptions.reek'))
+      Dir.mktmpdir(nil, SAMPLES_PATH) do |tempdir|
+        found = described_class.find(current: Pathname.new(tempdir))
+        expect(found).to eq(SAMPLES_PATH.join('exceptions.reek'))
+      end
     end
 
     it 'returns the file even if it’s just ‘.reek’' do
@@ -36,9 +38,9 @@ RSpec.describe Reek::Configuration::ConfigurationFileFinder do
 
     it 'returns the file in home if traversing from the current dir fails' do
       skip_if_a_config_in_tempdir
-      Dir.mktmpdir do |tempdir|
-        current = Pathname.new(tempdir)
-        found = described_class.find(current: current, home: SAMPLES_PATH)
+
+      Dir.mktmpdir(nil, SAMPLES_PATH) do |tempdir|
+        found = described_class.find(current: Pathname.new(tempdir))
         expect(found).to eq(SAMPLES_PATH.join('exceptions.reek'))
       end
     end
@@ -52,19 +54,32 @@ RSpec.describe Reek::Configuration::ConfigurationFileFinder do
 
     it 'returns nil when there are no files to find' do
       skip_if_a_config_in_tempdir
+
       Dir.mktmpdir do |tempdir|
         current = Pathname.new(tempdir)
-        home    = Pathname.new(tempdir)
+        home = Pathname.new(tempdir)
+
         found = described_class.find(current: current, home: home)
+
         expect(found).to be_nil
       end
     end
 
     it 'does not traverse up from :home' do
       skip_if_a_config_in_tempdir
+
       Dir.mktmpdir do |tempdir|
-        current = Pathname.new(tempdir)
-        found = described_class.find(current: current, home: SAMPLES_PATH.join('no_config_file'))
+        dir = Pathname.new(tempdir)
+        subdir = dir.join('subdir')
+        subsubdir = subdir.join('subsubdir')
+        config = dir.join('.reek')
+
+        FileUtils.mkdir(subdir)
+        FileUtils.mkdir(subsubdir)
+        FileUtils.touch(config)
+
+        found = described_class.find(current: subsubdir, home: subsubdir)
+
         expect(found).to be_nil
       end
     end
